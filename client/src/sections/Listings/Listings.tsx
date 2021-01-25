@@ -1,4 +1,4 @@
-import { server } from '../../lib/api';
+import { server, useQuery } from '../../lib/api';
 import {
   DeleteListingData,
   DeleteListingVariables,
@@ -34,24 +34,27 @@ interface Props {
 }
 
 export const Listings = ({ title }: Props) => {
-  const fetchListings = async () => {
-    const { data } = await server.fetch<ListingsData>({ query: LISTINGS });
-    console.log(data.listings);
-  };
+  const { data, refetch } = useQuery<ListingsData>(LISTINGS);
 
-  const deleteListing = async () => {
-    const { data } = await server.fetch<
-      DeleteListingData,
-      DeleteListingVariables
-    >({ query: DELETE_LISTING, variables: { id: '60047585f0d7e86923c85355' } });
-    console.log(data);
+  const deleteListing = async (id: string) => {
+    await server.fetch<DeleteListingData, DeleteListingVariables>({
+      query: DELETE_LISTING,
+      variables: { id },
+    });
+    refetch();
   };
 
   return (
     <div>
       <h2>{title}</h2>
-      <button onClick={fetchListings}>Query Listings!</button>
-      <button onClick={deleteListing}>Delete a listing!</button>
+      <ul>
+        {data?.listings.map(({ id, title }) => (
+          <li key={id}>
+            {title}
+            <button onClick={() => deleteListing(id)}>Delete a listing!</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
