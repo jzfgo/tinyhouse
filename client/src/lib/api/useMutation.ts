@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useCallback } from 'react';
+import { useReducer } from 'react';
 import { server } from './server';
 
 interface State<TData> {
@@ -12,9 +12,10 @@ type Action<TData> =
   | { type: 'FETCH_SUCCESS'; payload: TData }
   | { type: 'FETCH_ERROR' };
 
-type QueryResult<TData> = State<TData> & {
-  refetch: () => void;
-};
+type MutationResult<TData, TVariables> = [
+  (variables?: TVariables | undefined) => Promise<void>,
+  State<TData>
+];
 
 const reducer = <TData>() => (
   state: State<TData>,
@@ -35,7 +36,9 @@ const reducer = <TData>() => (
   }
 };
 
-export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
+export const useMutation = <TData = any, TVariables = any>(
+  query: string
+): MutationResult<TData, TVariables> => {
   const fetchReducer = reducer<TData>();
   const [state, dispatch] = useReducer(fetchReducer, {
     data: null,
@@ -43,28 +46,25 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
     error: false,
   });
 
-  const fetch = useCallback(() => {
-    (async function fetchApi() {
-      try {
-        dispatch({ type: 'FETCH' });
+  const fetch = async (variables?: TVariables) => {
+    try {
+      dispatch({ type: 'FETCH' });
 
-        const { data, errors } = await server.fetch<TData>({ query });
+      const { data, errors } = await server.fetch<TData, TVariables>({
+        query,
+        variables,
+      });
 
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
-
-        if (errors?.length) {
-          throw new Error(errors[0].message);
-        }
-      } catch (err) {
-        dispatch({ type: 'FETCH_ERROR' });
-        console.error(err);
+      if (errors?.length) {
+        throw new Error(errors[0].message);
       }
-    })();
-  }, [query]);
 
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
+      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+    } catch (err) {
+      dispatch({ type: 'FETCH_ERROR' });
+      console.error(err);
+    }
+  };
 
-  return { ...state, refetch: fetch };
+  return [fetch, state];
 };
