@@ -4,10 +4,7 @@ import { Database, User, Listing, Booking } from '../lib/types';
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net`;
 
 export const connectDatabase = async (): Promise<Database> => {
-  const client = await MongoClient.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  const client = await MongoClient.connect(uri);
 
   const db = client.db('main');
 
