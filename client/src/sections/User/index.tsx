@@ -49,7 +49,6 @@ export const User = ({
     return (
       <Content className="user">
         <ErrorBanner description="This user may not exist or we've encountered and error. Please, try again later."></ErrorBanner>
-        <PageSkeleton />
       </Content>
     );
   }

@@ -23,6 +23,7 @@
     "@types/react-router-dom": "^5.1.7",
     "antd": "^4.11.2",
     "graphql": "^15.5.0",
+    "moment": "^2.29.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
