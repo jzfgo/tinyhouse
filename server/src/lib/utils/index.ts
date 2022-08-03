@@ -7,8 +7,9 @@ export const authorize = async (
 ): Promise<User | null> => {
   const token = req.get('X-CSRF-TOKEN');
   const viewer = await db.users.findOne({
-    _id: req.signedCookies.userId,
+    _id: req.signedCookies.viewer,
     token,
   });
+
   return viewer;
 };

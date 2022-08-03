@@ -57,9 +57,10 @@ export interface User {
   avatar: string;
   contact: string;
   walletId?: string;
-  income: number;
+  income: number | null;
   bookings: ObjectId[];
   listings: ObjectId[];
+  authorized?: boolean;
 }
 
 export interface Database {
