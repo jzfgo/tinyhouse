@@ -19,13 +19,13 @@ import reportWebVitals from './reportWebVitals';
 import {
   AppHeader,
   Home,
-  Host,
   Listing,
   Listings,
   Login,
   NotFound,
   User,
 } from './sections';
+import { Host } from './sections/Host';
 import './styles/index.css';
 
 const client = new ApolloClient({
