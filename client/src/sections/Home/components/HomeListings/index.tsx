@@ -18,6 +18,7 @@ export const HomeListings = ({ title, listings }: Props) => {
       <List
         grid={{
           gutter: 8,
+          column: 3,
           xs: 1,
           sm: 2,
           md: 3,

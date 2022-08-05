@@ -9,6 +9,7 @@
     "clear": "ts-node temp/clear.ts"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.3.16",
     "apollo-server-express": "^2.19.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",

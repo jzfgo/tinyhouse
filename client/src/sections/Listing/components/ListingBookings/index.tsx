@@ -1,6 +1,5 @@
 import { Avatar, Divider, List, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { ListingCard } from '../../../../lib/components';
 import { Listing } from '../../../../lib/graphql/queries/Listing/__generated__/Listing';
 
 interface Props {
@@ -25,6 +24,7 @@ export const ListingBookings = ({
     <List
       grid={{
         gutter: 8,
+        column: 3,
         xs: 1,
         sm: 2,
         lg: 3,
