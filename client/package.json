@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@apollo/client": "^3.3.7",
+    "@apollo/client": "^3.6.9",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -54,6 +54,6 @@
     "graphql": "$graphql"
   },
   "devDependencies": {
-    "apollo": "^2.33.9"
+    "apollo": "^2.34.0"
   }
 }
