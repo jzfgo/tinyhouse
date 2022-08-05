@@ -19,13 +19,14 @@ import reportWebVitals from './reportWebVitals';
 import {
   AppHeader,
   Home,
+  Host,
   Listing,
   Listings,
   Login,
   NotFound,
+  Stripe,
   User,
 } from './sections';
-import { Host } from './sections/Host';
 import './styles/index.css';
 
 const client = new ApolloClient({
@@ -46,6 +47,7 @@ const initialViewer: Viewer = {
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
+
   const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
     onCompleted: (data) => {
       if (data && data.logIn) {
@@ -99,7 +101,16 @@ const App = () => {
           <Route
             exact
             path="/user/:id"
-            render={(props) => <User {...props} viewer={viewer} />}
+            render={(props) => (
+              <User {...props} viewer={viewer} setViewer={setViewer} />
+            )}
+          />
+          <Route
+            exact
+            path="/stripe"
+            render={(props) => (
+              <Stripe {...props} viewer={viewer} setViewer={setViewer} />
+            )}
           />
           <Route component={NotFound} />
         </Switch>
