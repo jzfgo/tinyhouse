@@ -90,7 +90,11 @@ const App = () => {
         </Affix>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/host" component={Host} />
+          <Route
+            exact
+            path="/host"
+            render={(props) => <Host {...props} viewer={viewer} />}
+          />
           <Route exact path="/listing/:id" component={Listing} />
           <Route exact path="/listings/:location?" component={Listings} />
           <Route
@@ -121,9 +125,7 @@ const App = () => {
 
 render(
   <ApolloProvider client={client}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <App />
   </ApolloProvider>,
   document.getElementById('root')
 );
