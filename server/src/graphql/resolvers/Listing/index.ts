@@ -160,7 +160,7 @@ export const listingResolvers: IResolvers = {
       }
 
       await db.users.updateOne(
-        { _id: new ObjectId(viewer._id) },
+        { _id: viewer._id },
         { $push: { listings: insertedListing._id } }
       );
 
