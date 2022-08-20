@@ -5,9 +5,9 @@ import {
   useMutation,
 } from '@apollo/client';
 import { Affix, Layout, Spin } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AppHeaderSkeleton, ErrorBanner } from './lib/components';
 import { LOG_IN } from './lib/graphql/mutations';
 import {
@@ -88,40 +88,23 @@ const App = () => {
         <Affix offsetTop={0} className="app__affix-header">
           <AppHeader viewer={viewer} setViewer={setViewer} />
         </Affix>
-        <Switch>
-          <Route exact path="/" component={Home} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="host" element={<Host viewer={viewer} />} />
+          <Route path="listing/:id" element={<Listing viewer={viewer} />} />
+          <Route path="listings" element={<Listings />} />
+          <Route path="listings/:location" element={<Listings />} />
+          <Route path="login" element={<Login setViewer={setViewer} />} />
           <Route
-            exact
-            path="/host"
-            render={(props) => <Host {...props} viewer={viewer} />}
+            path="user/:id"
+            element={<User viewer={viewer} setViewer={setViewer} />}
           />
           <Route
-            exact
-            path="/listing/:id"
-            render={(props) => <Listing {...props} viewer={viewer} />}
+            path="stripe"
+            element={<Stripe viewer={viewer} setViewer={setViewer} />}
           />
-          <Route exact path="/listings/:location?" component={Listings} />
-          <Route
-            exact
-            path="/login"
-            render={(props) => <Login {...props} setViewer={setViewer} />}
-          />
-          <Route
-            exact
-            path="/user/:id"
-            render={(props) => (
-              <User {...props} viewer={viewer} setViewer={setViewer} />
-            )}
-          />
-          <Route
-            exact
-            path="/stripe"
-            render={(props) => (
-              <Stripe {...props} viewer={viewer} setViewer={setViewer} />
-            )}
-          />
-          <Route component={NotFound} />
-        </Switch>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Layout>
     </Router>
   );

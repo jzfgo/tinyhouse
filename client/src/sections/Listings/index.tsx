@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Affix, Layout, List, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ErrorBanner, ListingCard } from '../../lib/components';
 import { ListingsFilter } from '../../lib/graphql/globalTypes';
 import { LISTINGS } from '../../lib/graphql/queries';
@@ -9,6 +9,7 @@ import {
   Listings as ListingsData,
   ListingsVariables,
 } from '../../lib/graphql/queries/Listings/__generated__/Listings';
+import { useScrollToTop } from '../../lib/hooks';
 import { ListingsPagination, ListingsSkeleton } from './components';
 import { ListingsFilters } from './components/ListingsFilters';
 
@@ -17,12 +18,13 @@ const { Title, Paragraph, Text } = Typography;
 
 const PAGE_LIMIT = 8;
 
-interface MatchParams {
+type MatchParams = {
   location: string;
-}
+};
 
-export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
-  const locationRef = useRef(match.params.location);
+export const Listings = () => {
+  const { location } = useParams<MatchParams>();
+  const locationRef = useRef(location);
   const [filter, setFilter] = useState<ListingsFilter>(
     ListingsFilter.PRICE_LOW_TO_HIGH
   );
@@ -31,9 +33,9 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const { data, loading, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
-      skip: locationRef.current !== match.params.location && page > 1,
+      skip: locationRef.current !== location && page > 1,
       variables: {
-        location: match.params.location,
+        location,
         filter,
         limit: PAGE_LIMIT,
         page,
@@ -41,10 +43,12 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     }
   );
 
+  useScrollToTop();
+
   useEffect(() => {
     setPage(1);
-    locationRef.current = match.params.location;
-  }, [match.params.location]);
+    locationRef.current = location;
+  }, [location]);
 
   if (loading) {
     return (

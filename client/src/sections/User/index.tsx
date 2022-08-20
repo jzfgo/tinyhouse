@@ -1,13 +1,14 @@
 import { useQuery } from '@apollo/client';
 import { Col, Layout, Row } from 'antd';
 import { useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { ErrorBanner, PageSkeleton } from '../../lib/components';
 import { USER } from '../../lib/graphql/queries';
 import {
   User as UserData,
   UserVariables,
 } from '../../lib/graphql/queries/User/__generated__/User';
+import { useScrollToTop } from '../../lib/hooks';
 import { Viewer } from '../../lib/types';
 import { UserBookings, UserListings, UserProfile } from './components';
 
@@ -15,19 +16,18 @@ interface Props {
   viewer: Viewer;
   setViewer: (viewer: Viewer) => void;
 }
-interface MatchParams {
+
+type MatchParams = {
   id: string;
-}
+};
 
 const { Content } = Layout;
 const PAGE_LIMIT = 4;
 
-export const User = ({
-  viewer,
-  setViewer,
-  match,
-  location,
-}: Props & RouteComponentProps<MatchParams>) => {
+export const User = ({ viewer, setViewer }: Props) => {
+  const { id } = useParams<MatchParams>();
+  const location = useLocation();
+
   const [listingsPage, setListingsPage] = useState(1);
   const [bookingsPage, setBookingsPage] = useState(1);
 
@@ -35,13 +35,16 @@ export const User = ({
     USER,
     {
       variables: {
-        id: match.params.id,
+        id: id as string,
         bookingsPage,
         listingsPage,
         limit: PAGE_LIMIT,
       },
+      fetchPolicy: 'cache-and-network',
     }
   );
+
+  useScrollToTop();
 
   const handleUserRefetch = async () => {
     await refetch();
@@ -69,7 +72,7 @@ export const User = ({
   }
 
   const user = data ? data.user : null;
-  const viewerIsUser = viewer.id === match.params.id;
+  const viewerIsUser = viewer.id === id;
 
   const userListings = user ? user.listings : null;
   const userBookings = user ? user.bookings : null;

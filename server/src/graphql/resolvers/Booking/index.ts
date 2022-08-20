@@ -12,6 +12,8 @@ import {
 import { authorize } from '../../../lib/utils';
 import { CreateBookingInput } from './types';
 
+const millisecondsPerDay = 86_400_000;
+
 const resolveBookingsIndex = (
   bookingsIndex: BookingsIndex,
   checkInDate: string,
@@ -72,8 +74,24 @@ export const bookingResolvers: IResolvers = {
           throw new Error('Viewer cannot book own listing');
         }
 
+        const today = new Date();
         const checkInDate = new Date(checkIn);
         const checkOutDate = new Date(checkOut);
+
+        if (checkInDate.getTime() > today.getTime() + 90 * millisecondsPerDay) {
+          throw new Error(
+            "check in date can't be more than 90 days from today"
+          );
+        }
+
+        if (
+          checkOutDate.getTime() >
+          today.getTime() + 90 * millisecondsPerDay
+        ) {
+          throw new Error(
+            "check out date can't be more than 90 days from today"
+          );
+        }
 
         if (checkOutDate < checkInDate) {
           throw new Error('Check out date must be after check in date');

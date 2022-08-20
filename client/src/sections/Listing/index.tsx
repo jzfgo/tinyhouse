@@ -1,14 +1,17 @@
 import { useQuery } from '@apollo/client';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { Col, Layout, Row } from 'antd';
 import { Moment } from 'moment';
 import { useMemo, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ErrorBanner, PageSkeleton } from '../../lib/components';
 import { LISTING } from '../../lib/graphql/queries';
 import {
   Listing as ListingData,
   ListingVariables,
 } from '../../lib/graphql/queries/Listing/__generated__/Listing';
+import { useScrollToTop } from '../../lib/hooks';
 import { Viewer } from '../../lib/types';
 import {
   ListingBookings,
@@ -16,21 +19,21 @@ import {
   ListingCreateBookingModal,
   ListingDetails,
 } from './components';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
 
-interface MatchParams {
+type MatchParams = {
   id: string;
-}
+};
 
-interface Props extends RouteComponentProps<MatchParams> {
+interface Props {
   viewer: Viewer;
 }
 
 const { Content } = Layout;
 const PAGE_LIMIT = 3;
 
-export const Listing = ({ match, viewer }: Props) => {
+export const Listing = ({ viewer }: Props) => {
+  const { id } = useParams<MatchParams>();
+
   const stripePromise = useMemo(
     () => loadStripe(`${process.env.REACT_APP_S_PUBLISHABLE_KEY}`),
     []
@@ -45,8 +48,10 @@ export const Listing = ({ match, viewer }: Props) => {
     ListingData,
     ListingVariables
   >(LISTING, {
-    variables: { id: match.params.id, bookingsPage, limit: PAGE_LIMIT },
+    variables: { id: id as string, bookingsPage, limit: PAGE_LIMIT },
   });
+
+  useScrollToTop();
 
   const clearBookingData = () => {
     setModalVisible(false);

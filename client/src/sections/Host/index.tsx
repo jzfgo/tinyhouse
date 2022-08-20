@@ -22,7 +22,7 @@ import type {
   UploadProps,
 } from 'antd/lib/upload/interface';
 import { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ListingType } from '../../lib/graphql/globalTypes';
 import { HOST_LISTING } from '../../lib/graphql/mutations';
 import { Viewer } from '../../lib/types';
@@ -35,6 +35,7 @@ import {
   HostListing as HostListingData,
   HostListingVariables,
 } from '../../lib/graphql/mutations/HostListing/__generated__/HostListing';
+import { useScrollToTop } from '../../lib/hooks';
 
 interface Props {
   viewer: Viewer;
@@ -63,6 +64,8 @@ export const Host = ({ viewer }: Props) => {
       );
     },
   });
+
+  useScrollToTop();
 
   const handleImageUpload: UploadProps['onChange'] = (
     info: UploadChangeParam<UploadFile>
@@ -142,7 +145,7 @@ export const Host = ({ viewer }: Props) => {
   }
 
   if (data && data.hostListing) {
-    return <Redirect to={`/listings/${data.hostListing.id}`} />;
+    return <Navigate to={`/listings/${data.hostListing.id}`} />;
   }
 
   return (

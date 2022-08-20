@@ -1,7 +1,7 @@
 import { useApolloClient, useMutation } from '@apollo/client';
 import { Card, Layout, Spin, Typography } from 'antd';
 import { useEffect, useRef } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { ErrorBanner } from '../../lib/components';
 import { LOG_IN } from '../../lib/graphql/mutations';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../lib/graphql/mutations/LogIn/__generated__/LogIn';
 import { AUTH_URL } from '../../lib/graphql/queries/AuthUrl';
 import { AuthUrl as AuthUrlData } from '../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl';
+import { useScrollToTop } from '../../lib/hooks';
 import { Viewer } from '../../lib/types';
 import {
   displayErrorMessage,
@@ -36,6 +37,8 @@ export const Login = ({ setViewer }: Props) => {
         }
       },
     });
+
+  useScrollToTop();
 
   const logInRef = useRef(logIn);
   useEffect(() => {
@@ -68,7 +71,7 @@ export const Login = ({ setViewer }: Props) => {
 
   if (logInData && logInData.logIn) {
     const { id: viewerId } = logInData.logIn;
-    return <Redirect to={`/user/${viewerId}`} />;
+    return <Navigate to={`/user/${viewerId}`} />;
   }
 
   const logInErrorBannerElement = logInError ? (
