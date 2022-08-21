@@ -49,7 +49,7 @@ export const Home = () => {
 
   const renderListingsSection = () => {
     if (loading) {
-      return <HomeListingsSkeleton />;
+      return <HomeListingsSkeleton title="Premium Listings - Loading…" />;
     }
 
     if (data) {
